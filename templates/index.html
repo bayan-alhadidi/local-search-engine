@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Indexing Setup</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script>
+        function showProgressBar() {
+            document.getElementById('progress-bar').style.display = 'block';
+        }
+    </script>
+</head>
+<body>
+    <header>
+        <h1>Indexing Setup</h1>
+    </header>
+    <main class="indexing-setup-main">
+        <div class="progress-bar" id="progress-bar">
+            <div></div>
+        </div>
+        <div class="form-container">
+            <form method="POST" onsubmit="showProgressBar()">
+                <div class="input-group">
+                    <label for="directory">Index Directory:</label>
+                    <input type="text" id="directory" name="directory" placeholder="Enter directory path..." required>
+                </div>
+                <div class="input-group">
+                    <label for="language">Language:</label>
+                    <select id="language" name="language">
+                        <option value="ar">Arabic</option>
+                        <option value="en">English</option>
+                    </select>
+                </div>
+                <button type="submit">Submit</button>
+            </form>
+        </div>
+    </main>
+</body>
+</html>
+

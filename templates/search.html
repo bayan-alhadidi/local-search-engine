@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bayan Search</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script>
+        function highlightQuery(text, query) {
+            const regex = new RegExp(`(${query})`, 'gi');
+            return text.replace(regex, '<span class="highlight">$1</span>');
+        }
+        function previewFile(path, query) {
+            fetch(`/preview?path=${path}`)
+                .then(response => response.text())
+                .then(data => {
+                    const highlightedData = highlightQuery(data, query);
+                    const previewElement = document.getElementById('preview');
+                    previewElement.innerHTML = highlightedData;
+                    setDirection(highlightedData, previewElement);
+                });
+        }
+        function setDirection(text, element) {
+            const arabicRegex = /[\u0600-\u06FF]/;
+            if (arabicRegex.test(text)) {
+                element.style.direction = 'rtl';
+                element.style.textAlign = 'right';
+            } else {
+                element.style.direction = 'ltr';
+                element.style.textAlign = 'left';
+            }
+        }
+    </script>
+</head>
+<body>
+    <header>
+        <h1>Bayan Search</h1>
+    </header>
+    <main class="search-page-main">
+        <div class="form-and-students">
+            <form method="POST">
+                <div class="search-container">
+                    <div class="input-group">
+                        <input type="text" id="query" name="query" placeholder="Enter your search query..." value="{{ query }}" required>
+                        <select id="search_algorithm" name="search_algorithm">
+                            <option value="boolean" {% if search_algorithm == "boolean" %}selected{% endif %}>Boolean Model</option>
+                            <option value="extended_boolean" {% if search_algorithm == "extended_boolean" %}selected{% endif %}>Extended Boolean Model</option>
+                            <option value="vector" {% if search_algorithm == "vector" %}selected{% endif %}>Vector Model</option>
+                        </select>
+                    </div>
+                    <button type="submit">Search</button>
+                </div>
+            </form>
+            <div class="students">
+                <h2>Student Info</h2>
+                <ul><li> Bayan Alhadidi بيان الحديدي </li></ul>
+                <ul> <li> bayan_73736 </li></ul>
+            </div>
+        </div>
+        <div class="content">
+            <div class="results">
+                {% if results %}
+                <h2>Search Results:</h2>
+                <ul>
+                    {% for title, path in results %}
+                        <li><a href="javascript:void(0);" onclick="previewFile('{{ path }}', '{{ query }}')">{{dir_path +'/'+ path}}</a></li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+            </div>
+            <div class="browser">
+                <h2 class="preview-h2">Document Preview:</h2>
+                <div id="preview" class="preview"></div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>
